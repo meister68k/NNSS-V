@@ -31,9 +31,11 @@ MNIST.COM [画像ファイル名]
 [ピクセルの階調 1byte][ピクセルの階調 1byte]...[ピクセルの階調 1byte] ← 28ライン目 28byte
 ```
 
+model_training/make_mnist_beta.rb を使用するとMNISTデータセット(train-images-idx3-ubyteとtrain-labels-idx1-ubyte)からバイナリ形式で画像を抜き出します。
+
 ### 画像ファイルのビューワ
 
-前節のフォーマットの画像ファイルをディザリングして表示するX1用のプログラムを付属しています。8×4ドットで16階調の2ピクセルを表現しますが，2ピクセル分を組み合わせた8x8ドットをPCGとして定義し，テキスト14行を使用して28ラインの画像を表示します。
+前節のフォーマットの画像ファイルをディザリングして表示するLSX-Dodgers用(ワークエリアを直接アクセスする関係でversion 1.40限定)のプログラムを付属しています。8×4ドットで16階調の2ピクセルを表現しますが，2ピクセル分を組み合わせた8x8ドットをPCGとして定義し，テキスト14行を使用して28ラインの画像を表示します。
 
 ```
 SETPCG.COM DITHER.PCG
@@ -85,7 +87,8 @@ MNIST手書き数字データセットで学習したネットワークを量子
 
 Google Colabを使用してPython+TensorFlowで学習用ネットワークを実装し，重みをJSON形式で出力します。10エポックで学習を終了しました。
 
-training/MNIST_minimum.ipynb が学習用ネットワークのソースです。
+model_training/MNIST_minimum.ipynb が学習用ネットワークのソースです。
+学習したネットワークの重みをjson形式で出力します。
 
 ### 量子化
 
@@ -101,6 +104,8 @@ training/MNIST_minimum.ipynb が学習用ネットワークのソースです。
 | F.C. (weight)   | 1bit | 2bit    | 5bit     |
 | F.C. (output)   | 0    | 3bit    | 5bit     |
 
+model_training/NNSS-V_MNIST.rb でjson形式の重みを読み込んで量子化し，再びjson形式で出力します。
+
 ### 重みのバイナリフォーマット
 
 量子化した重みをバイナリファイルに格納しています。特にヘッダなどなく8bit整数をべたに並べただけのファイルです。オフセット値を以下の表に示します。
@@ -110,6 +115,8 @@ training/MNIST_minimum.ipynb が学習用ネットワークのソースです。
 | 0      | Conv2D bias   | [8]        |
 | 8      | Conv2D kernel | [3][3][8]  |
 | 80     | F.C. kernel   | [1352][10] |
+
+model_training/make_weights.rb で量子化済みのjson形式の重みを読込み，バイナリフォーマットで出力します。出力されたバイナリファイルをCP/M上で使用します。
 
 ### 使用コンパイラ
 
